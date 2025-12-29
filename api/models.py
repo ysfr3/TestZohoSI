@@ -22,8 +22,9 @@ class SendToSI(models.Model):
     Mission_ID = models.JSONField()
     Progress = models.JSONField()
     Account_Name = models.JSONField()
+    SI_Template = models.JSONField()
 
-    AllFields = [Deal_Name, Deal_ID, Mission_ID, Progress, Account_Name]
+    AllFields = [Deal_Name, Deal_ID, Mission_ID, Progress, Account_Name, SI_Template]
 
     def __str__(self):
         return str(self.AllFields)

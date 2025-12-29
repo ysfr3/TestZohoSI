@@ -56,7 +56,20 @@ class PushSendToSI(generics.ListCreateAPIView):
 
         SIConnection = SIWrapper()
 
+        serializedTemplate = serialized_data.get("SI_Template")
+        if serializedTemplate is not None or serializedTemplate != "None":
+            passedTemplate = serializedTemplate
+        else:
+            passedTemplate = None
+
+        print("0-----------------------------------------0")
+        print(serializedTemplate)
+        print(passedTemplate)
+        print("0-----------------------------------------0")
+
+
         res = SIConnection.create_project(data={
+            "TemplateName": passedTemplate,
             "Client": serialized_data.get("Account_Name"),
             "Name": serialized_data.get("Deal_Name"),
             "Progress": serialized_data.get("Progress"),
@@ -163,8 +176,6 @@ class PushSendToCRM(generics.ListCreateAPIView):
 
         print(res)
 
-
-# Simple delay endpoint for testing/diagnostics
 @api_view(['GET'])
 def delay(request, seconds: int = None):
     """Delay the response for `seconds` seconds and return HTTP 200.
@@ -173,16 +184,13 @@ def delay(request, seconds: int = None):
     as a query parameter `seconds` (e.g. /api/delay/?seconds=5). Also handles
     query strings like `?5` by inspecting the raw query string.
     """
-    # Determine seconds from path param or query string
     s = None
     if seconds is not None:
         s = seconds
     else:
-        # Prefer explicit `seconds` query parameter
         if 'seconds' in request.GET:
             s = request.GET.get('seconds')
         else:
-            # Fallback: handle query like `?5` where QUERY_STRING == '5'
             qsraw = request.META.get('QUERY_STRING', '')
             if qsraw.isdigit():
                 s = qsraw
@@ -197,7 +205,6 @@ def delay(request, seconds: int = None):
     except (TypeError, ValueError):
         return Response({"detail": "Invalid seconds value"}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Perform the delay
     time.sleep(secs)
 
     return Response(status=status.HTTP_200_OK)

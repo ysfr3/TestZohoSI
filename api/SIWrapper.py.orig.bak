@@ -1,8 +1,8 @@
 # =============================================================================
 # SIWrapper.py
-# Author: Aidan Lelliott, Jason Owens
+# Author: Aidan Lelliott
 # Organization: ASW
-# Date: 12/23/2025
+# Date: 10/08/2025
 # Version: 1.0.0
 #
 # Description:
@@ -21,7 +21,7 @@ class SIWrapper:
     def __init__(self, base_url: str = 'https://api.d-tools.com/SI/'):
         self.url = base_url if base_url.endswith('/') else f'{base_url}/'
         load_dotenv()
-        _token = os.getenv("TEST_SI_TOKEN")
+        _token = os.getenv("SI_TOKEN")
         if _token is None:
             raise ValueError("SI TOKEN NOT SET")
         print(_token)
