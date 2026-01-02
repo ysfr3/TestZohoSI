@@ -78,7 +78,7 @@ class PushSendToSI(generics.ListCreateAPIView):
             "SalesRep": serialized_data.get("Owner"),
             "ProjectManager": serialized_data.get("Project_Manager"),
             "Designer": serialized_data.get("Engineering_Lead"),
-            "CloseDate": serialized_data.get("Closing_Date"),
+            "EstimatedCloseDate": serialized_data.get("Closing_Date"),
         })
 
         print(res)
