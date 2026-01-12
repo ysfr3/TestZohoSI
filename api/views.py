@@ -153,12 +153,24 @@ class PushSendToCRM(generics.ListCreateAPIView):
         CRMConnection = CRMWrapper()
         dealId = project_data.get("IntegrationProjectId")
 
+        # LOOP HERE
+        finalizedLaborHours = 0
+        items = project_data.get("Items")
+        for each_item in items:
+            laborType = each_item.get("LaborTypes")
+            match laborType:
+                case "Tech Labor":
+                    # Tech Labor
+                case "Engineering Labor":
+                    # Engineering Labor
+
+            print(each_item)
+            TotalLaborHours = each_item.get("TotalLaborHours")
+            if TotalLaborHours >= 0:
+                finalizedLaborHours += TotalLaborHours
+
         note_content = f"[DEAL UPDATED FROM SI] - Updated On: {str(datetime.now())} - Updated By: {project_data.get("UpdatedBy")}"
         res = CRMConnection.add_note(dealId=int(dealId), note_content=note_content)
-
-        if project_data.get("IsChangeOrder") == "True":
-            note_content = f"[Change Order - {project_data.get("CONumber")}] Name: {project_data.get("COName")} | Status: {project_data.get("COStatus")} | Type: {project_data.get("COType")} | Accepted: {project_data.get("COAcceptedOn")} | Rejected: {project_data.get("CORejectedOn")} | Created On: {project_data.get("COCreatedOn")}"
-            res = CRMConnection.add_note(dealId=int(dealId), note_content=note_content)
 
         res = CRMConnection.push_new_deal_data(dealId=int(dealId), data={
             "data": [
