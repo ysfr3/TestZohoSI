@@ -160,10 +160,13 @@ class PushSendToCRM(generics.ListCreateAPIView):
             laborType = each_item.get("LaborTypes")
             match laborType:
                 case "Tech Labor":
+		    pass
                     # Tech Labor
                 case "Engineering Labor":
+		    pass
                     # Engineering Labor
-
+		case _:
+		    print(f"Unkown labor type: {laborType}")
             print(each_item)
             TotalLaborHours = each_item.get("TotalLaborHours")
             if TotalLaborHours >= 0:
