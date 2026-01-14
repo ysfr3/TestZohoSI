@@ -154,23 +154,46 @@ class PushSendToCRM(generics.ListCreateAPIView):
         dealId = project_data.get("IntegrationProjectId")
 
         # LOOP HERE
-        finalizedLaborHours = 0
+        techFinalizedLaborHours = 0
+        engineeringPostFinalizedLaborHours = 0
+        engineeringPreFinalizedLaborHours = 0
+        programmingFinalizedLaborHours = 0
+        projectManagmentFinalizedLaborHours = 0
+        warrantyFinalizedLaborHours = 0
         items = project_data.get("Items")
         for each_item in items:
             laborType = each_item.get("LaborTypes")
             match laborType:
                 case "Tech Labor":
-		    pass
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    techFinalizedLaborHours += TotalLaborHours
                     # Tech Labor
-                case "Engineering Labor":
-		    pass
-                    # Engineering Labor
-		case _:
-		    print(f"Unkown labor type: {laborType}")
+                case "Engineering (Post Sales)":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    engineeringPostFinalizedLaborHours += TotalLaborHours
+                    # Engineering (Post Sales) Labor
+                case "Engineering (Pre-Sales)":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    engineeringPreFinalizedLaborHours += TotalLaborHours
+                    # Engineering (Pre-Sales) Labor
+                case "Programming":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    programmingFinalizedLaborHours += TotalLaborHours
+                    # Programming Labor
+                case "Project Management":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    projectManagmentFinalizedLaborHours += TotalLaborHours
+                    # Project Management Labor
+                case "Warranty":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    warrantyFinalizedLaborHours += TotalLaborHours
+                    # Warranty Labor
+                case _:
+                    print(f"Unkown labor type: {laborType}")
             print(each_item)
             TotalLaborHours = each_item.get("TotalLaborHours")
-            if TotalLaborHours >= 0:
-                finalizedLaborHours += TotalLaborHours
+
+
 
         note_content = f"[DEAL UPDATED FROM SI] - Updated On: {str(datetime.now())} - Updated By: {project_data.get("UpdatedBy")}"
         res = CRMConnection.add_note(dealId=int(dealId), note_content=note_content)
@@ -191,14 +214,14 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     "Custom_Field05":     project_data.get("CustomField5"),
                     # These fields need to be filtered and totaled from project items in SI. The get responses below are what they are named in SI
                     #"Unassigned_Hours": float(project_data.get("Unassigned_Hrs")),
-                    #"Tech_Labor_Hours": float(project_data.get("Tech Labor")),
-                    #"Eng_Pre_Sales_Hours": float(project_data.get("Engineering (Pre-Sales)")),
-                    #"Eng_Post_Sales_Hours": float(project_data.get("Engineering (Post Sales)")),
-                    #"Programming_Hours": float(project_data.get("Programming")),
-                    #"PM_Hours": float(project_data.get("Project Management")),
+                    "Tech_Labor_Hours": float(techFinalizedLaborHours),
+                    "Eng_Pre_Sales_Hours": float(engineeringPreFinalizedLaborHours),
+                    "Eng_Post_Sales_Hours": float(engineeringPostFinalizedLaborHours),
+                    "Programming_Hours": float(programmingFinalizedLaborHours),
+                    "PM_Hours": float(projectManagmentFinalizedLaborHours),
                     #"Travel_Time_Hours": float(project_data.get("Travel (Time)")),
                     #"Travel_Expense_Misc": float(project_data.get("Travel (Expense)")),
-                    #"Warranty_Hours": float(project_data.get("Warranty")),
+                    "Warranty_Hours": float(warrantyFinalizedLaborHours),
                 }
             ]
         })
