@@ -160,6 +160,7 @@ class PushSendToCRM(generics.ListCreateAPIView):
         programmingFinalizedLaborHours = 0
         projectManagmentFinalizedLaborHours = 0
         warrantyFinalizedLaborHours = 0
+        unassignedFinalizedLaborHours = 0
         items = project_data.get("Items")
         for each_item in items:
             laborType = each_item.get("LaborTypes")
@@ -188,6 +189,10 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     TotalLaborHours = each_item.get("TotalLaborHours") or 0
                     warrantyFinalizedLaborHours += TotalLaborHours
                     # Warranty Labor
+                case "Unassigned":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    unassignedFinalizedLaborHours += TotalLaborHours
+                    # Unsassigned Labor Hours
                 case _:
                     print(f"Unkown labor type: {laborType}")
             print(each_item)
@@ -213,7 +218,7 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     "Custom_Field04":     project_data.get("CustomField4"),
                     "Custom_Field05":     project_data.get("CustomField5"),
                     # These fields need to be filtered and totaled from project items in SI. The get responses below are what they are named in SI
-                    #"Unassigned_Hours": float(project_data.get("Unassigned_Hrs")),
+                    "Unassigned_Hours": float(unassignedFinalizedLaborHours),
                     "Tech_Labor_Hours": float(techFinalizedLaborHours),
                     "Eng_Pre_Sales_Hours": float(engineeringPreFinalizedLaborHours),
                     "Eng_Post_Sales_Hours": float(engineeringPostFinalizedLaborHours),
