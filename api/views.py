@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # =============================================================================
 # views.py
 # Author: Aidan Lelliott and Jason Owens
@@ -157,10 +156,10 @@ class PushSendToCRM(generics.ListCreateAPIView):
         # LOOP HERE
         techFinalizedLaborHours = 0
         engineeringPostFinalizedLaborHours = 0
-        #engineeringPreFinalizedLaborHours = 0
-        #programmingFinalizedLaborHours = 0
-        #projectManagmentFinalizedLaborHours = 0
-        #warrantyFinalizedLaborHours = 0
+        engineeringPreFinalizedLaborHours = 0
+        programmingFinalizedLaborHours = 0
+        projectManagmentFinalizedLaborHours = 0
+        warrantyFinalizedLaborHours = 0
         items = project_data.get("Items")
         for each_item in items:
             laborType = each_item.get("LaborTypes")
@@ -173,22 +172,22 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     TotalLaborHours = each_item.get("TotalLaborHours") or 0
                     engineeringPostFinalizedLaborHours += TotalLaborHours
                     # Engineering (Post Sales) Labor
-                #case "Engineering (Pre-Sales)":
-                #    TotalLaborHours = each_item.get("TotalLaborHours") or 0
-                #    engineeringPreFinalizedLaborHours += TotalLaborHours
-                #    # Engineering (Pre-Sales) Labor
-                #case "Programming":
-                #    TotalLaborHours = each_item.get("TotalLaborHours") or 0
-                #    programmingFinalizedLaborHours += TotalLaborHours
-                #    # Programming Labor
-                #case "Project Management":
-                #    TotalLaborHours = each_item.get("TotalLaborHours") or 0
-                #    projectManagmentFinalizedLaborHours += TotalLaborHours
-                #    # Project Management Labor
-                #case "Warranty":
-                #    TotalLaborHours = each_item.get("TotalLaborHours") or 0
-                #    warrantyFinalizedLaborHours += TotalLaborHours
-                #    # Warranty Labor
+                case "Engineering (Pre-Sales)":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    engineeringPreFinalizedLaborHours += TotalLaborHours
+                    # Engineering (Pre-Sales) Labor
+                case "Programming":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    programmingFinalizedLaborHours += TotalLaborHours
+                    # Programming Labor
+                case "Project Management":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    projectManagmentFinalizedLaborHours += TotalLaborHours
+                    # Project Management Labor
+                case "Warranty":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    warrantyFinalizedLaborHours += TotalLaborHours
+                    # Warranty Labor
                 case _:
                     print(f"Unkown labor type: {laborType}")
             print(each_item)
