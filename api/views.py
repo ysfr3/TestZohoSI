@@ -22,6 +22,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 import time
+import json
 from .SIWrapper import SIWrapper
 from .CRMWrapper import CRMWrapper
 from .models import SendToSI, SendToCRM
@@ -137,6 +138,8 @@ class PushSendToCRM(generics.ListCreateAPIView):
             for id in serializer.validated_data.get("Ids"):
                 
                 project = SI_API.get_project(project_id=id)
+                with open(f"project_{id}.json", "w") as f:
+                    f.write(json.dumps(project))
                 print(project)
                 self.updateCRM(serializer.validated_data, project)
 
