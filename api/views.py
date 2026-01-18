@@ -164,7 +164,9 @@ class PushSendToCRM(generics.ListCreateAPIView):
         projectManagmentFinalizedLaborHours = 0
         warrantyFinalizedLaborHours = 0
         unassignedFinalizedLaborHours = 0
-        phaseFinalizedLaborHours = 0
+        #phaseFinalizedLaborHours = 0
+
+        """
         items = project_data.get("Items")
         for each_item in items:
             laborType = each_item.get("LaborTypes")
@@ -205,6 +207,83 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     print(f"Unkown labor type: {laborType}")
             print(each_item)
             TotalLaborHours = each_item.get("TotalLaborHours")
+        """
+
+        # Totals for top-level labor types
+        #techFinalizedLaborHours = 0
+        #engineeringPostFinalizedLaborHours = 0
+        #engineeringPreFinalizedLaborHours = 0
+        #programmingFinalizedLaborHours = 0
+        #projectManagmentFinalizedLaborHours = 0
+        #warrantyFinalizedLaborHours = 0
+        #unassignedFinalizedLaborHours = 0
+        warrantyQuantityFromPhase = 0  # Tracks Quantity of Warranty items inside Phase
+
+        items = project_data.get("Items", [])
+
+        for each_item in items:
+            laborType = each_item.get("LaborTypes")
+
+            match laborType:
+                case "Tech Labor":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    techFinalizedLaborHours += TotalLaborHours
+
+                case "Engineering (Post Sales)":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    engineeringPostFinalizedLaborHours += TotalLaborHours
+
+                case "Engineering (Pre-Sales)":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    engineeringPreFinalizedLaborHours += TotalLaborHours
+
+                case "Programming":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    programmingFinalizedLaborHours += TotalLaborHours
+
+                case "Project Management":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    projectManagmentFinalizedLaborHours += TotalLaborHours
+
+                case "Warranty":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    warrantyFinalizedLaborHours += TotalLaborHours
+
+                case "Unassigned":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    unassignedFinalizedLaborHours += TotalLaborHours
+
+                case "Phase":
+                    # Check for nested items within the Phase
+                    nested_items = each_item.get("Items", [])
+                    for nested in nested_items:
+                        # Match based on LaborType (if present)
+                        nested_labor_type = nested.get("LaborTypes")
+                        TotalLaborHours = nested.get("TotalLaborHours") or 0
+
+                        match nested_labor_type:
+                            case "Tech Labor":
+                                techFinalizedLaborHours += TotalLaborHours
+                            case "Engineering (Post Sales)":
+                                engineeringPostFinalizedLaborHours += TotalLaborHours
+                            case "Engineering (Pre-Sales)":
+                                engineeringPreFinalizedLaborHours += TotalLaborHours
+                            case "Programming":
+                                programmingFinalizedLaborHours += TotalLaborHours
+                            case "Project Management":
+                                projectManagmentFinalizedLaborHours += TotalLaborHours
+                            case "Warranty":
+                                warrantyFinalizedLaborHours += TotalLaborHours
+                            case "Unassigned":
+                                unassignedFinalizedLaborHours += TotalLaborHours
+
+                        # Regardless of labor type, check if Model is Warranty
+                        if nested.get("Model") == "Warranty":
+                            quantity = nested.get("Quantity") or 0
+                            warrantyQuantityFromPhase += quantity
+
+                case _:
+                    print(f"Unknown labor type: {laborType}")
 
 
 
@@ -234,7 +313,7 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     "PM_Hours": float(projectManagmentFinalizedLaborHours),
                     #"Travel_Time_Hours": float(project_data.get("Travel (Time)")),
                     #"Travel_Expense_Misc": float(project_data.get("Travel (Expense)")),
-                    "Warranty_Hours": float(phaseFinalizedLaborHours),
+                    "Warranty_Hours": float(warrantyFinalizedLaborHours),
                 }
             ]
         })
