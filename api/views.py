@@ -164,6 +164,7 @@ class PushSendToCRM(generics.ListCreateAPIView):
         projectManagmentFinalizedLaborHours = 0
         warrantyFinalizedLaborHours = 0
         unassignedFinalizedLaborHours = 0
+        phaseFinalizedLaborHours = 0
         items = project_data.get("Items")
         for each_item in items:
             laborType = each_item.get("LaborTypes")
@@ -196,6 +197,10 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     TotalLaborHours = each_item.get("TotalLaborHours") or 0
                     unassignedFinalizedLaborHours += TotalLaborHours
                     # Unsassigned Labor Hours
+                case "Phase":
+                    TotalLaborHours = each_item.get("TotalLaborHours") or 0
+                    phaseFinalizedLaborHours += TotalLaborHours
+                    # Phase Labor Hours
                 case _:
                     print(f"Unkown labor type: {laborType}")
             print(each_item)
@@ -229,7 +234,7 @@ class PushSendToCRM(generics.ListCreateAPIView):
                     "PM_Hours": float(projectManagmentFinalizedLaborHours),
                     #"Travel_Time_Hours": float(project_data.get("Travel (Time)")),
                     #"Travel_Expense_Misc": float(project_data.get("Travel (Expense)")),
-                    "Warranty_Hours": float(warrantyFinalizedLaborHours),
+                    "Warranty_Hours": float(phaseFinalizedLaborHours),
                 }
             ]
         })
